@@ -204,22 +204,26 @@ class EpiOrchestrationService:
         )
         
         # 3. Salvar eventos no banco de dados
-        face_event = FaceDetectionEvent(
-            **request.face_event.model_dump(),
-            person_id=request.person_id,
-            location=request.location
-        )
+        face_event_data = request.face_event.model_dump()
+        if not face_event_data.get('person_id'):
+            face_event_data['person_id'] = request.person_id
+        if not face_event_data.get('location'):
+            face_event_data['location'] = request.location
+        
+        face_event = FaceDetectionEvent(**face_event_data)
         face_doc = face_event.model_dump()
         face_doc['timestamp'] = face_doc['timestamp'].isoformat()
         await db.face_events.insert_one(face_doc)
         
         epi_event_ids = []
-        for epi_event_data in request.epi_events:
-            epi_event = EpiDetectionEvent(
-                **epi_event_data.model_dump(),
-                person_id=request.person_id,
-                location=request.location
-            )
+        for epi_event_create in request.epi_events:
+            epi_event_data = epi_event_create.model_dump()
+            if not epi_event_data.get('person_id'):
+                epi_event_data['person_id'] = request.person_id
+            if not epi_event_data.get('location'):
+                epi_event_data['location'] = request.location
+            
+            epi_event = EpiDetectionEvent(**epi_event_data)
             epi_doc = epi_event.model_dump()
             epi_doc['timestamp'] = epi_doc['timestamp'].isoformat()
             await db.epi_events.insert_one(epi_doc)
