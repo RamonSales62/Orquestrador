@@ -64,4 +64,4 @@ class Decision(Base):
     epi_event_ids = Column(JSON, nullable=True)  # Store as JSON array
     reason = Column(String(500), nullable=False)
     confidence_score = Column(Float, nullable=False)
-    metadata = Column(JSON, nullable=True)
+    metadata_ = Column("metadata", JSON, nullable=True)
