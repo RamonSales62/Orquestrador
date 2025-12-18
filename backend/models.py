@@ -48,7 +48,7 @@ class EpiEvent(Base):
     properly_worn = Column(Boolean, nullable=False)
     person_id = Column(String(100), nullable=True)
     location = Column(String(200), nullable=True)
-    metadata = Column(JSON, nullable=True)
+    metadata_ = Column("metadata", JSON, nullable=True)
 
 
 class Decision(Base):
